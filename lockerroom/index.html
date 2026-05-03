@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnPeaked — The Drift Ends Here</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #004aad;
+      --black: #0d0d0d;
+      --white: #ffffff;
+      --off-white: #f7f7f6;
+      --mid: #888;
+      --display: 'Barlow Condensed', sans-serif;
+      --body: 'Barlow', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--body); background: var(--white); color: var(--black); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 48px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .nav-logo { font-family: var(--display); font-weight: 900; font-size: 1.55rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--black); text-decoration: none; }
+    .nav-logo span { color: var(--blue); }
+    .nav-cta { font-family: var(--display); font-weight: 700; font-size: 0.88rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; color: var(--white); background: var(--blue); padding: 10px 24px; transition: background 0.15s; }
+    .nav-cta:hover { background: var(--black); }
+
+    /* HERO */
+    #hero {
+      padding-top: 72px; min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+    }
+    .hero-text {
+      background: var(--white); padding: 100px 64px 80px 48px;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid rgba(0,0,0,0.06);
+    }
+    .hero-eyebrow {
+      font-family: var(--display); font-weight: 700; font-size: 0.8rem;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--blue);
+      margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 2px; background: var(--blue); }
+    h1 {
+      font-family: var(--display); font-weight: 900;
+      font-size: clamp(3.5rem, 6vw, 6rem); line-height: 0.95;
+      text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 28px;
+    }
+    h1 em { font-style: italic; color: var(--blue); }
+    .hero-sub { font-size: 1.05rem; line-height: 1.7; color: #555; max-width: 420px; margin-bottom: 40px; }
+    .hero-sub strong { color: var(--black); font-weight: 600; }
+    .btn {
+      display: inline-block; font-family: var(--display); font-weight: 800;
+      font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; padding: 16px 40px; cursor: pointer;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+    .btn-primary { background: var(--blue); color: var(--white); }
+    .btn-primary:hover { background: var(--black); transform: translateY(-2px); }
+    .btn-white { background: var(--white); color: var(--black); border: 2px solid var(--black); }
+    .btn-white:hover { background: var(--black); color: var(--white); }
+    .hero-stats {
+      display: flex; gap: 0; margin-top: 56px; padding-top: 40px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    .hero-stat { padding-right: 32px; margin-right: 32px; border-right: 1px solid rgba(0,0,0,0.1); }
+    .hero-stat:last-child { border: none; }
+    .stat-label { font-family: var(--display); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-bottom: 4px; }
+    .stat-value { font-family: var(--display); font-weight: 900; font-size: 1.8rem; color: var(--black); }
+    .hero-image { position: relative; overflow: hidden; }
+    .hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .hero-image-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(255,255,255,0.08) 0%, transparent 100%);
+    }
+    .hero-image-tag {
+      position: absolute; bottom: 32px; left: 32px;
+      background: var(--blue); color: var(--white);
+      font-family: var(--display); font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.16em; text-transform: uppercase; padding: 8px 16px;
+    }
+
+    /* PROBLEM */
+    #problem { padding: 120px 0; background: var(--white); border-top: 4px solid var(--blue); }
+    .section-label { font-family: var(--display); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--blue); margin-bottom: 16px; }
+    .section-headline { font-family: var(--display); font-weight: 900; font-size: clamp(2.8rem, 5vw, 4.5rem); line-height: 0.97; text-transform: uppercase; margin-bottom: 64px; }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .callouts { display: flex; flex-direction: column; }
+    .callout {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(1.3rem, 2.2vw, 1.8rem); text-transform: uppercase;
+      padding: 24px 0; border-bottom: 1px solid rgba(0,0,0,0.09);
+      line-height: 1.1; display: flex; gap: 16px; align-items: flex-start;
+    }
+    .callout:first-child { border-top: 1px solid rgba(0,0,0,0.09); }
+    .callout-num { font-family: var(--display); font-weight: 700; font-size: 0.72rem; color: var(--blue); letter-spacing: 0.1em; margin-top: 4px; min-width: 24px; }
+    .callout span { color: var(--blue); }
+    .problem-aside { position: sticky; top: 100px; }
+    .quote-img { width: 100%; display: block; }
+    .drift-box {
+      background: var(--blue); color: var(--white);
+      padding: 40px 36px; margin-top: 24px;
+    }
+    .drift-box p { font-family: var(--display); font-weight: 900; font-size: 1.8rem; text-transform: uppercase; line-height: 1.1; }
+
+    /* WHAT */
+    #what { background: var(--off-white); padding: 120px 0; }
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+    .pillar { background: var(--white); padding: 48px 36px; position: relative; overflow: hidden; }
+    .pillar::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--blue); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+    .pillar:hover::after { transform: scaleX(1); }
+    .pillar-number { font-family: var(--display); font-weight: 900; font-size: 3.5rem; color: rgba(0,74,173,0.1); line-height: 1; margin-bottom: 12px; }
+    .pillar-title { font-family: var(--display); font-weight: 900; font-size: 1.7rem; text-transform: uppercase; margin-bottom: 14px; }
+    .pillar-body { font-size: 0.95rem; line-height: 1.7; color: #555; }
+
+    /* PROOF */
+    #proof { background: var(--black); padding: 100px 0; }
+    .proof-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .proof-image img { width: 100%; display: block; }
+    .proof-text { color: var(--white); }
+    .proof-text blockquote { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 2.5vw, 2.2rem); line-height: 1.3; text-transform: uppercase; margin-bottom: 32px; }
+    .proof-text blockquote::before { content: '\201C'; font-size: 5rem; color: var(--blue); line-height: 0.6; display: block; margin-bottom: 12px; font-family: Georgia, serif; }
+    .proof-divider { width: 40px; height: 3px; background: var(--blue); margin-bottom: 20px; }
+    .proof-attr { font-family: var(--display); font-weight: 700; font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+
+    /* CTA */
+    #cta { background: var(--white); padding: 120px 0; border-top: 4px solid var(--blue); }
+    .cta-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .cta-headline { font-family: var(--display); font-weight: 900; font-size: clamp(3rem, 5.5vw, 5.5rem); line-height: 0.95; text-transform: uppercase; margin-bottom: 24px; }
+    .cta-sub { font-size: 1rem; line-height: 1.7; color: #555; margin-bottom: 36px; }
+    .offer-box { border: 2px solid var(--black); padding: 48px 40px; position: relative; }
+    .founding-badge { position: absolute; top: -14px; left: 32px; background: var(--blue); color: var(--white); font-family: var(--display); font-weight: 800; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; padding: 5px 14px; }
+    .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .price-amount { font-family: var(--display); font-weight: 900; font-size: 5rem; line-height: 1; }
+    .price-period { font-family: var(--display); font-weight: 700; font-size: 1.2rem; color: var(--mid); text-transform: uppercase; }
+    .price-note { font-size: 0.88rem; color: #666; line-height: 1.5; margin-bottom: 28px; }
+    .price-note strong { color: var(--black); }
+    .spots-bar { margin-top: 28px; }
+    .spots-label { font-family: var(--display); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px; }
+    .spots-track { height: 4px; background: rgba(0,0,0,0.1); }
+    .spots-fill { height: 100%; width: 0; background: var(--blue); transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+    footer { background: var(--black); padding: 36px 48px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--display); font-weight: 900; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--white); }
+    .footer-logo span { color: var(--blue); }
+    .footer-note { font-size: 0.82rem; color: rgba(255,255,255,0.35); }
+    .footer-note strong { color: rgba(255,255,255,0.55); }
+
+    @media (max-width: 900px) {
+      #hero { grid-template-columns: 1fr; }
+      .hero-image { height: 60vw; }
+      .hero-text { padding: 80px 24px 60px; }
+      .problem-grid { grid-template-columns: 1fr; gap: 48px; }
+      .problem-aside { position: static; }
+      .pillars { grid-template-columns: 1fr; }
+      .proof-inner { grid-template-columns: 1fr; }
+      .cta-inner { grid-template-columns: 1fr; }
+      nav { padding: 0 24px; }
+      .container { padding: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">Un<span>Peaked</span></a>
+  <a href="https://www.skool.com/unpeaked-locker-room-9525/about" class="nav-cta" target="_blank" rel="noopener">Join Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow reveal">For former competitive athletes</div>
+    <h1 class="reveal d1">The arena<br />changed.<br /><em>The athlete</em><br />didn't.</h1>
+    <p class="hero-sub reveal d2">You didn't lose your edge overnight. <strong>The Drift</strong> is gradual — the slow erosion of identity, standards, and drive when competition ends. UnPeaked is where it stops.</p>
+    <a href="https://www.skool.com/unpeaked-locker-room-9525/about" class="btn btn-primary reveal d3" target="_blank" rel="noopener">Join the Community</a>
+    <div class="hero-stats reveal d4">
+      <div class="hero-stat">
+        <div class="stat-label">Built for</div>
+        <div class="stat-value">Athletes 25–45</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-label">Founding spots</div>
+        <div class="stat-value">100</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-label">Rate</div>
+        <div class="stat-value">$35/mo</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="uploads/IMG_8169.png" alt="Athlete in motion on the field" />
+    <div class="hero-image-overlay"></div>
+    <div class="hero-image-tag">UnPeaked Athlete</div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <p class="section-label reveal">Sound familiar?</p>
+    <h2 class="section-headline reveal d1">You Haven't Peaked.<br />You've Drifted.</h2>
+    <div class="problem-grid">
+      <div class="callouts">
+        <div class="callout reveal d1"><span class="callout-num">01</span><span>You're still competing — just against<span> nobody</span>.</span></div>
+        <div class="callout reveal d2"><span class="callout-num">02</span><span>The structure's gone. The standards followed<span> right after</span>.</span></div>
+        <div class="callout reveal d3"><span class="callout-num">03</span><span>You look fine on the outside. Inside,<span> you know</span>.</span></div>
+        <div class="callout reveal d4"><span class="callout-num">04</span><span>You've been waiting to feel like yourself<span> again</span>.</span></div>
+      </div>
+      <div class="problem-aside reveal d2">
+        <img src="uploads/The Elite Standard.PNG" alt="I have no prime. I will forever evolve." class="quote-img" />
+        <div class="drift-box">
+          <p>The Drift is real.<br />So is the way back.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT -->
+<section id="what">
+  <div class="container">
+    <p class="section-label reveal">What UnPeaked is</p>
+    <h2 class="section-headline reveal d1">Built for the athlete<br />that remains.</h2>
+    <div class="pillars">
+      <div class="pillar reveal d1">
+        <div class="pillar-number">01</div>
+        <h3 class="pillar-title">Training</h3>
+        <p class="pillar-body">Programming that respects your athletic history. Not beginner workouts. Not influencer fluff. Structured, progressive training built around men who know what it feels like to perform.</p>
+      </div>
+      <div class="pillar reveal d2">
+        <div class="pillar-number">02</div>
+        <h3 class="pillar-title">Accountability</h3>
+        <p class="pillar-body">The team environment you lost when sport ended. Weekly check-ins. Shared commitments. Someone who notices when you've gone quiet — and won't let you stay that way.</p>
+      </div>
+      <div class="pillar reveal d3">
+        <div class="pillar-number">03</div>
+        <h3 class="pillar-title">Community</h3>
+        <p class="pillar-body">Men who understand. Who came from sport. Who felt The Drift and chose to fight it. The camaraderie isn't manufactured — it's earned, because everyone here has competed at something real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF -->
+<section id="proof">
+  <div class="container">
+    <div class="proof-inner">
+      <div class="proof-image reveal">
+        <img src="uploads/IMG_8169.png" alt="Athlete running at full speed" />
+      </div>
+      <div class="proof-text reveal d2">
+        <blockquote>"Hassan doesn't let you coast. The programming pushed me harder than I expected, the check-ins kept me honest, and his understanding of what it takes to perform at a high level is different from any coach I've worked with. I'm training with purpose again."</blockquote>
+        <div class="proof-divider"></div>
+        <p class="proof-attr">James R. — Former College Linebacker</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <p class="section-label reveal">Founding membership</p>
+        <h2 class="cta-headline reveal d1">Stop<br />drifting.<br />Start<br />now.</h2>
+        <p class="cta-sub reveal d2">The founding rate locks in for life. First 100 members only. After that, the price goes up and it stays up. This isn't urgency marketing — it's structure.</p>
+        <a href="https://www.skool.com/unpeaked-locker-room-9525/about" class="btn btn-primary reveal d3" target="_blank" rel="noopener">Claim Your Spot</a>
+      </div>
+      <div class="offer-box reveal d2">
+        <span class="founding-badge">Founding Rate</span>
+        <div class="price-row">
+          <span class="price-amount">$35</span>
+          <span class="price-period">/ month</span>
+        </div>
+        <p class="price-note"><strong>Locked for life</strong> — your rate never increases as long as you stay. First 100 founding members only.</p>
+        <a href="https://www.skool.com/unpeaked-locker-room-9525/about" class="btn btn-primary" style="width:100%;text-align:center;display:block;" target="_blank" rel="noopener">Claim Your Spot</a>
+        <div class="spots-bar">
+          <p class="spots-label">Spots claimed</p>
+          <div class="spots-track"><div class="spots-fill" id="spots-fill-v1"></div></div>
+          <p class="spots-label" id="spots-count-label" style="margin-top:6px;">— of 100 filled</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Un<span>Peaked</span></div>
+  <p class="footer-note">Powered by <strong>Stringer Elite Performance</strong></p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  // === SCROLL REVEAL ===
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+  document.querySelectorAll('#hero .reveal').forEach(function(el) { el.classList.add('visible'); });
+
+  // === SPOTS BAR — SUPABASE LIVE ===
+  (function() {
+    var TOTAL = 100;
+    var pendingClaimed = null; // null until Supabase responds — no hardcoded fallback
+
+    var fill  = document.getElementById('spots-fill-v1');
+    var label = document.getElementById('spots-count-label');
+
+    function setBar(claimed) {
+      claimed = Math.min(Math.max(claimed, 0), TOTAL);
+      var pct = ((claimed / TOTAL) * 100).toFixed(1);
+      if (fill)  fill.style.width = pct + '%';
+      if (label) label.textContent = claimed + ' of ' + TOTAL + ' filled';
+    }
+
+    function setError() {
+      if (fill)  fill.style.width = '0%';
+      if (label) label.textContent = '— of ' + TOTAL + ' filled';
+      console.warn('[UnPeaked] Spots bar: could not reach Supabase.');
+    }
+
+    // Reveal bar on scroll — animate to real value only
+    var spotsBar = document.querySelector('.spots-bar');
+    var barRevealed = false;
+    var spotsObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !barRevealed) {
+          barRevealed = true;
+          if (pendingClaimed !== null) setBar(pendingClaimed);
+          // if data hasn't arrived yet, setBar will be called when it does
+          spotsObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    if (spotsBar) spotsObserver.observe(spotsBar);
+
+    // Supabase connection
+    try {
+      var client = window.supabase.createClient(
+        'https://pmyitwqnddjmeelovfsj.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBteWl0d3FuZGRqbWVlbG92ZnNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODg0ODMsImV4cCI6MjA5MjU2NDQ4M30.HLm7wYmv2H-4-ig6LDkStvTkK6CS3lEMtLqqLhjMrrw'
+      );
+
+      // Initial fetch
+      client
+        .from('spots')
+        .select('remaining')
+        .limit(1)
+        .single()
+        .then(function(res) {
+          if (res.error || !res.data) { setError(); return; }
+          var claimed = TOTAL - res.data.remaining;
+          pendingClaimed = claimed;
+          if (barRevealed) setBar(claimed);
+
+          // Real-time subscription
+          client
+            .channel('spots-live')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'spots' },
+              function(payload) {
+                if (payload.new && payload.new.remaining != null) {
+                  var live = TOTAL - payload.new.remaining;
+                  pendingClaimed = live;
+                  setBar(live);
+                }
+              }
+            )
+            .subscribe(function(status) {
+              if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                console.warn('[UnPeaked] Realtime subscription failed — bar holds last fetched value.');
+              }
+            });
+        })
+        .catch(function() { setError(); });
+
+    } catch(e) { setError(); }
+  })();
+</script>
+</body>
+</html>
